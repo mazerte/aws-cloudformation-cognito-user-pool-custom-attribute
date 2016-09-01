@@ -1,0 +1,81 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Example of Cognito UserPool",
+    "Metadata": {
+
+    },
+    "Parameters": {
+      "CognitoUserPoolLambdaName": {
+          "Description": "CognitoUserPool lambda name",
+          "Type": "String"
+      },
+      "CognitoUserPoolCustomAttributeLambdaName": {
+          "Description": "CognitoUserPoolCustomAttribute lambda name",
+          "Type": "String"
+      }
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+
+      "MyUserPool": {
+         "Type": "Custom::CognitoUserPool",
+         "Version": "1.0",
+         "Properties": {
+            "ServiceToken": {"Fn::Join" : [":",[ "arn:aws:lambda", { "Ref": "AWS::Region" }, { "Ref": "AWS::AccountId" }, "function", { "Ref": "CognitoUserPoolLambdaName" } ] ]},
+            "PoolName": "MyUserPool",
+            "Policies": {
+              "PasswordPolicy": {
+                "MinimumLength": "8",
+                "RequireUppercase": "true",
+                "RequireLowercase": "true",
+                "RequireNumbers": "true",
+                "RequireSymbols": "false"
+              }
+            },
+            "AutoVerifiedAttributes": [
+              "email"
+            ],
+            "AliasAttributes": [
+              "email"
+            ],
+            "SmsVerificationMessage": "Your verification code is {####}.",
+            "EmailVerificationMessage": "Your verification code is {####}.",
+            "EmailVerificationSubject": "Your verification code",
+            "SmsAuthenticationMessage": "Your authentication code is {####}.",
+            "MfaConfiguration": "OFF",
+            "DeviceConfiguration": {
+              "ChallengeRequiredOnNewDevice": "false",
+              "DeviceOnlyRememberedOnUserPrompt": "false"
+            }
+         }
+      },
+
+      "MyUserPoolJobAttribute": {
+        "Type": "Custom::CognitoUserPoolCustomAttribute",
+        "Version": "1.0",
+        "Properties": {
+          "ServiceToken": {"Fn::Join" : [":",[ "arn:aws:lambda", { "Ref": "AWS::Region" }, { "Ref": "AWS::AccountId" }, "function", { "Ref": "CognitoUserPoolCustomAttributeLambdaName" } ] ]},
+          "UserPoolId": { "Ref": "MyUserPool" },
+          "AttributeDataType": "String",
+          "DeveloperOnlyAttribute": "false",
+          "Mutable": "true",
+          "Name": "job",
+          "StringAttributeConstraints": {
+            "MaxLength": "128",
+            "MinLength": "1"
+          },
+          "Required": "false"
+        }
+      }
+    },
+    "Outputs": {
+      "MyUserPoolId": {
+        "Value": { "Ref": "MyUserPool" }
+      }
+    }
+}

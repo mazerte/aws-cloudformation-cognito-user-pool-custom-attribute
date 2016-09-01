@@ -1,0 +1,62 @@
+{
+  "type": "object",
+  "required": [
+    "UserPoolId",
+    "AttributeDataType",
+    "Name"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "UserPoolId": {
+      "type": "string",
+      "pattern": "(\\w+-\\w+-\\d+)_.*"
+    },
+    "AttributeDataType": {
+      "type": "string",
+      "enum": ["String", "Number", "DateTime", "Boolean"]
+    },
+    "DeveloperOnlyAttribute": {
+      "type": "string",
+      "enum": ["true", "false"]
+    },
+    "Mutable": {
+      "type": "string",
+      "enum": ["true", "false"]
+    },
+    "Name": {
+      "type": "string"
+    },
+    "Required": {
+      "type": "string",
+      "enum": ["true", "false"]
+    },
+    "NumberAttributeConstraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MaxValue": {
+          "type": "string",
+          "pattern": "\\d+"
+        },
+        "MinValue": {
+          "type": "string",
+          "pattern": "\\d+"
+        }
+      }
+    },
+    "StringAttributeConstraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MaxLength": {
+          "type": "string",
+          "pattern": "\\d+"
+        },
+        "MinLength": {
+          "type": "string",
+          "pattern": "\\d+"
+        }
+      }
+    }
+  }
+}
